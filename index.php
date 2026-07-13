@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Alex Morgan – Profile App</title>
+  <meta name="description" content="Alex Morgan – Creative Developer & Designer. Mobile profile app.">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    /* ══ Tokens ══ */
+    :root {
+      --accent:   #667eea;
+      --accent2:  #764ba2;
+      --bg:       #0f0f13;
+      --surface:  #18181f;
+      --surface2: #222230;
+      --border:   rgba(255,255,255,.07);
+      --text:     #f0f0f5;
+      --muted:    #8888aa;
+      --nav-h:    68px;
+      --status-h: 36px;
+      --radius:   18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ══ Full-Screen Shell ══ */
+    .phone-shell {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--bg);
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Dynamic Island – hidden in full-screen mode */
+    .dynamic-island { display: none; }
+
+    /* ══ Status Bar ══ */
+    .status-bar {
+      height: var(--status-h);
+      background: var(--bg);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 24px 4px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .status-time {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.5px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      font-size: 0.75rem;
+    }
+
+    /* ══ App Viewport ══ */
+    .app-viewport {
+      flex: 1;
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ══ Screens ══ */
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--nav-h) + 10px);
+      opacity: 0;
+      transform: translateX(30px);
+      pointer-events: none;
+      transition: opacity .3s ease, transform .3s ease;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    .screen.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    /* ──── HOME SCREEN ──── */
+    .home-hero {
+      background: linear-gradient(160deg, #1c1c30 0%, var(--bg) 60%);
+      padding: 50px 24px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .home-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(102,126,234,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .avatar-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      margin: 0 auto 14px;
+      position: relative;
+    }
+
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      object-fit: cover;
+      display: block;
+    }
+
+    .online-dot {
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 14px; height: 14px;
+      background: #2ecc71;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+    }
+
+    .home-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .home-role {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .home-bio {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    /* Social row */
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .social-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+    }
+
+    .social-pill:hover { background: var(--accent); transform: scale(1.04); }
+    .social-pill i { font-size: 0.9rem; color: var(--accent); }
+    .social-pill:hover i { color: #fff; }
+
+    /* Action buttons */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      padding: 20px 24px 0;
+    }
+
+    .app-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, opacity .2s;
+    }
+
+    .app-btn:active { transform: scale(.96); }
+
+    .app-btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+
+    .app-btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* Stats strip */
+    .stats-strip {
+      display: flex;
+      margin: 20px 24px 0;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .stat-box {
+      flex: 1;
+      padding: 16px 8px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-box:last-child { border-right: none; }
+
+    .stat-num {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Skills chips */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 20px 24px 10px;
+    }
+
+    .chips-scroll {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .chips-scroll::-webkit-scrollbar { display: none; }
+
+    .chip {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 7px 14px;
+      font-size: 0.77rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .chip.hot { background: linear-gradient(135deg,var(--accent),var(--accent2)); border-color: transparent; }
+
+    /* QR shortcut */
+    .qr-shortcut {
+      margin: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .qr-shortcut:hover { background: var(--surface2); }
+
+    .qr-shortcut-left { display: flex; align-items: center; gap: 14px; }
+
+    .qr-icon-box {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.1rem;
+    }
+
+    .qr-shortcut-title { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+    .qr-shortcut-sub   { font-size: 0.75rem; color: var(--muted); }
+    .qr-shortcut-arrow { color: var(--muted); font-size: 0.85rem; }
+
+    /* ──── PORTFOLIO SCREEN ──── */
+    .screen-header {
+      padding: 20px 24px 12px;
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .screen-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .screen-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      padding: 12px 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-row::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .project-list {
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102,126,234,.15);
+    }
+
+    .project-thumb {
+      height: 150px;
+      background: linear-gradient(135deg, #1e1e35, #2d2d50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.4));
+    }
+
+    .project-thumb.c1 { background: linear-gradient(135deg,#1a1a35,#2a1a50); }
+    .project-thumb.c2 { background: linear-gradient(135deg,#1a2a35,#1a3050); }
+    .project-thumb.c3 { background: linear-gradient(135deg,#2a1a1a,#501a1a); }
+    .project-thumb.c4 { background: linear-gradient(135deg,#1a2a1a,#1a501a); }
+
+    .project-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(102,126,234,.9);
+      border-radius: 8px;
+      padding: 3px 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      z-index: 1;
+    }
+
+    .project-info {
+      padding: 14px 16px;
+    }
+
+    .project-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .project-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .p-tag {
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* ──── ABOUT SCREEN ──── */
+    .about-hero {
+      background: linear-gradient(160deg, #1c1c30, var(--bg));
+      padding: 30px 24px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .about-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .about-name { font-size: 1.2rem; font-weight: 800; color: var(--text); }
+    .about-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 2px; }
+
+    .info-cards {
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+    }
+
+    .info-card-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .info-card p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .skill-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skill-row-item span {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .bar-track {
+      background: var(--surface2);
+      border-radius: 20px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      animation: growW 1s ease forwards;
+    }
+
+    @keyframes growW { from { width: 0 !important; } }
+
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .exp-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .exp-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .exp-title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .exp-org   { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+
+    /* ──── CONTACT SCREEN ──── */
+    .contact-hero {
+      background: linear-gradient(160deg, #1c1c30, var(--bg));
+      padding: 30px 24px 20px;
+      text-align: center;
+    }
+
+    .contact-links {
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contact-link-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      transition: background .2s, transform .15s;
+      cursor: pointer;
+    }
+
+    .contact-link-card:hover { background: var(--surface2); transform: translateX(3px); }
+
+    .cl-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .cl-label { font-size: 0.7rem; color: var(--muted); }
+    .cl-value { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+    .cl-arrow { margin-left: auto; color: var(--muted); font-size: 0.8rem; }
+
+    .form-card {
+      margin: 14px 24px 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .form-card h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .app-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 10px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .app-input:focus { border-color: var(--accent); }
+    .app-input::placeholder { color: var(--muted); }
+
+    textarea.app-input { resize: none; height: 90px; }
+
+    .send-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity .2s, transform .15s;
+    }
+
+    .send-btn:hover { opacity: .88; }
+    .send-btn:active { transform: scale(.97); }
+
+    /* ══ Bottom Navigation ══ */
+    .bottom-nav {
+      height: var(--nav-h);
+      background: rgba(18,18,28,.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 8px;
+      flex-shrink: 0;
+      z-index: 50;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 4px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-radius: 14px;
+      transition: background .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,.05); }
+
+    .nav-icon {
+      font-size: 1.1rem;
+      color: var(--muted);
+      transition: color .2s, transform .2s;
+    }
+
+    .nav-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: color .2s;
+    }
+
+    .nav-item.active .nav-icon {
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .nav-item.active .nav-label { color: var(--accent); }
+
+    .nav-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .nav-item.active .nav-dot { opacity: 1; }
+
+    /* Center FAB (QR) */
+    .nav-fab {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .fab-btn {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(102,126,234,.45);
+      transition: transform .2s, box-shadow .2s;
+      margin-bottom: 6px;
+    }
+
+    .fab-btn:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 10px 32px rgba(102,126,234,.6);
+    }
+
+    /* ══ QR Modal ══ */
+    #qrModal {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    #qrModal.active { display: flex; }
+
+    .qr-sheet {
+      width: 100%;
+      background: #1a1a2e;
+      border-radius: 24px 24px 0 0;
+      padding: 12px 24px 32px;
+      text-align: center;
+      animation: sheetUp .35s cubic-bezier(.22,1,.36,1);
+      border-top: 1px solid var(--border);
+    }
+
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    .sheet-handle {
+      width: 40px; height: 4px;
+      background: rgba(255,255,255,.2);
+      border-radius: 4px;
+      margin: 0 auto 20px;
+    }
+
+    .qr-sheet-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .qr-sheet-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    #qrCodeCanvas {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    #qrCodeCanvas canvas,
+    #qrCodeCanvas img {
+      border-radius: 16px;
+      border: 3px solid rgba(102,126,234,.3);
+      padding: 10px;
+      background: #fafafa;
+    }
+
+    .qr-url {
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+      margin-bottom: 18px;
+    }
+
+    .qr-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .qr-action-btn {
+      flex: 1;
+      padding: 13px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      gap: 7px;
+      transition: opacity .2s;
+    }
+
+    .qr-action-btn:hover { opacity: .85; }
+
+    .qr-dl { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
+    .qr-cancel { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+    /* ══ Toast ══ */
+    #toast {
+      position: absolute;
+      bottom: calc(var(--nav-h) + 14px);
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(30,30,50,.95);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 300;
+      backdrop-filter: blur(10px);
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Home button & side buttons (decoration) */
+    .phone-shell::before {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 130px;
+      width: 3px;
+      height: 60px;
+      background: #222;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 80px 0 #222;
+    }
+
+    .phone-shell::after {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 110px;
+      width: 3px;
+      height: 40px;
+      background: #222;
+      border-radius: 4px 0 0 4px;
+      box-shadow: 0 60px 0 #222, 0 110px 0 #222;
+    }
+
+    /* ── Responsive: on small screens, fill full viewport ── */
+    @media (max-width: 430px) {
+      body { background: var(--bg); align-items: flex-start; overflow: auto; }
+      .phone-shell {
+        width: 100vw;
+        height: 100svh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .dynamic-island { display: none; }
+      .phone-shell::before, .phone-shell::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Phone Shell ══ -->
+  <div class="phone-shell">
+    <div class="dynamic-island"></div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time" id="statusTime">10:35</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <i class="fas fa-battery-three-quarters"></i>
+      </div>
+    </div>
+
+    <!-- App Viewport -->
+    <div class="app-viewport">
+
+      <!-- ══ SCREEN: Home ══ -->
+      <div class="screen active" id="screen-home">
+        <div class="home-hero">
+          <div class="avatar-ring">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Alex Morgan">
+            <div class="online-dot"></div>
+          </div>
+          <div class="home-name">Alex Morgan</div>
+          <div class="home-role">Creative Developer &amp; Designer</div>
+          <p class="home-bio">I build beautiful digital experiences and write elegant code. Coffee enthusiast &amp; tech explorer.</p>
+          <div class="social-row">
+            <a href="#" class="social-pill"><i class="fab fa-github"></i> GitHub</a>
+            <a href="#" class="social-pill"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="#" class="social-pill"><i class="fab fa-twitter"></i> Twitter</a>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="app-btn app-btn-primary" id="followBtn"><i class="fas fa-user-plus"></i> &nbsp;Follow</button>
+          <button class="app-btn app-btn-ghost" id="contactBtn"><i class="fas fa-envelope"></i> &nbsp;Contact</button>
+        </div>
+
+        <div class="stats-strip">
+          <div class="stat-box">
+            <div class="stat-num">8+</div>
+            <div class="stat-label">Years Exp.</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">50+</div>
+            <div class="stat-label">Projects</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">30K</div>
+            <div class="stat-label">Followers</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">⭐4.9</div>
+            <div class="stat-label">Rating</div>
+          </div>
+        </div>
+
+        <div class="section-label">Top Skills</div>
+        <div class="chips-scroll">
+          <span class="chip hot">React</span>
+          <span class="chip hot">UI/UX</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">Node.js</span>
+          <span class="chip">PHP</span>
+          <span class="chip">Figma</span>
+          <span class="chip">Python</span>
+          <span class="chip">Docker</span>
+        </div>
+
+        <!-- QR shortcut -->
+        <div class="qr-shortcut" id="qrShortcut">
+          <div class="qr-shortcut-left">
+            <div class="qr-icon-box"><i class="fas fa-qrcode"></i></div>
+            <div>
+              <div class="qr-shortcut-title">Share My Profile</div>
+              <div class="qr-shortcut-sub">Tap to show QR code</div>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right qr-shortcut-arrow"></i>
+        </div>
+      </div>
+
+      <!-- ══ SCREEN: Portfolio ══ -->
+      <div class="screen" id="screen-portfolio">
+        <div class="screen-header">
+          <div class="screen-title">Portfolio</div>
+          <div class="screen-sub">Selected works &amp; projects</div>
+        </div>
+        <div class="filter-row">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn">Web App</button>
+          <button class="filter-btn">Mobile</button>
+          <button class="filter-btn">Design</button>
+          <button class="filter-btn">OSS</button>
+        </div>
+        <div class="project-list">
+          <div class="project-card">
+            <div class="project-thumb c1">
+              <span>🚀</span>
+              <span class="project-badge">Web App</span>
+            </div>
+            <div class="project-info">
+              <div class="project-name">Nexus Dashboard</div>
+              <div class="project-desc">A real-time SaaS analytics platform built with React &amp; D3.js. Serving 50K+ daily active users.</div>
+              <div class="project-tags">
+                <span class="p-tag">React</span>
+                <span class="p-tag">D3.js</span>
+                <span class="p-tag">Node.js</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-thumb c2">
+              <span>📱</span>
+              <span class="project-badge">Mobile</span>
+            </div>
+            <div class="project-info">
+              <div class="project-name">FitTrack App</div>
+              <div class="project-desc">Cross-platform fitness tracker with AI-powered workout recommendations. 4.8★ on the App Store.</div>
+              <div class="project-tags">
+                <span class="p-tag">React Native</span>
+                <span class="p-tag">TensorFlow</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-thumb c3">
+              <span>🎨</span>
+              <span class="project-badge">Design</span>
+            </div>
+            <div class="project-info">
+              <div class="project-name">Aura Design System</div>
+              <div class="project-desc">A comprehensive design system &amp; component library used by 5 product teams internally.</div>
+              <div class="project-tags">
+                <span class="p-tag">Figma</span>
+                <span class="p-tag">Storybook</span>
+                <span class="p-tag">CSS</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-card">
+            <div class="project-thumb c4">
+              <span>🌿</span>
+              <span class="project-badge">OSS</span>
+            </div>
+            <div class="project-info">
+              <div class="project-name">OpenChart</div>
+              <div class="project-desc">Lightweight, accessible charting library for the web with zero dependencies. 2.1K GitHub stars.</div>
+              <div class="project-tags">
+                <span class="p-tag">TypeScript</span>
+                <span class="p-tag">Canvas API</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SCREEN: About ══ -->
+      <div class="screen" id="screen-about">
+        <div class="about-hero">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Alex Morgan" class="about-avatar">
+          <div>
+            <div class="about-name">Alex Morgan</div>
+            <div class="about-role">Creative Developer &amp; Designer</div>
+          </div>
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card-title">Biography</div>
+            <p>A results-driven developer &amp; designer with 8+ years of experience crafting scalable, accessible, and visually exceptional web applications. Passionate about the intersection of design and engineering — bringing pixel-perfect UIs to life with clean, maintainable code.</p>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-title">Technical Skills</div>
+            <div class="skill-rows">
+              <div class="skill-row-item">
+                <span><span>UI/UX Design</span><span>95%</span></span>
+                <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+              </div>
+              <div class="skill-row-item">
+                <span><span>JavaScript / TypeScript</span><span>90%</span></span>
+                <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+              </div>
+              <div class="skill-row-item">
+                <span><span>React / Next.js</span><span>88%</span></span>
+                <div class="bar-track"><div class="bar-fill" style="width:88%"></div></div>
+              </div>
+              <div class="skill-row-item">
+                <span><span>PHP / Laravel</span><span>80%</span></span>
+                <div class="bar-track"><div class="bar-fill" style="width:80%"></div></div>
+              </div>
+              <div class="skill-row-item">
+                <span><span>DevOps / Docker</span><span>65%</span></span>
+                <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-title">Experience</div>
+            <div class="exp-list">
+              <div class="exp-row">
+                <div class="exp-dot"></div>
+                <div>
+                  <div class="exp-title">Senior Full-Stack Developer</div>
+                  <div class="exp-org">Nexus Digital Labs · 2022 – Present</div>
+                </div>
+              </div>
+              <div class="exp-row">
+                <div class="exp-dot"></div>
+                <div>
+                  <div class="exp-title">UI/UX Developer</div>
+                  <div class="exp-org">Pixel Bridge Agency · 2019 – 2022</div>
+                </div>
+              </div>
+              <div class="exp-row">
+                <div class="exp-dot"></div>
+                <div>
+                  <div class="exp-title">Front-End Developer</div>
+                  <div class="exp-org">StartUp Foundry · 2017 – 2019</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-title">Education</div>
+            <div class="exp-list">
+              <div class="exp-row">
+                <div class="exp-dot"></div>
+                <div>
+                  <div class="exp-title">M.Sc. Human-Computer Interaction</div>
+                  <div class="exp-org">Stanford University · 2015–2017</div>
+                </div>
+              </div>
+              <div class="exp-row">
+                <div class="exp-dot"></div>
+                <div>
+                  <div class="exp-title">B.Sc. Computer Science</div>
+                  <div class="exp-org">UC Berkeley · 2011–2015</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <a href="resume.html" target="_blank" class="app-btn app-btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border-radius:14px;padding:14px;font-size:.88rem;font-weight:700;">
+            <i class="fas fa-file-alt"></i> View Full CV
+          </a>
+        </div>
+      </div>
+
+      <!-- ══ SCREEN: Contact ══ -->
+      <div class="screen" id="screen-contact">
+        <div class="screen-header">
+          <div class="screen-title">Contact</div>
+          <div class="screen-sub">Let's build something great</div>
+        </div>
+
+        <div class="contact-links">
+          <div class="contact-link-card" id="emailCard">
+            <div class="cl-icon" style="background:linear-gradient(135deg,#667eea,#764ba2)"><i class="fas fa-envelope" style="color:#fff"></i></div>
+            <div>
+              <div class="cl-label">Email</div>
+              <div class="cl-value">hello@alexmorgan.dev</div>
+            </div>
+            <i class="fas fa-copy cl-arrow"></i>
+          </div>
+          <a href="#" class="contact-link-card">
+            <div class="cl-icon" style="background:linear-gradient(135deg,#0077b5,#005582)"><i class="fab fa-linkedin" style="color:#fff"></i></div>
+            <div>
+              <div class="cl-label">LinkedIn</div>
+              <div class="cl-value">linkedin.com/in/alexmorgan</div>
+            </div>
+            <i class="fas fa-external-link-alt cl-arrow"></i>
+          </a>
+          <a href="#" class="contact-link-card">
+            <div class="cl-icon" style="background:#111"><i class="fab fa-github" style="color:#fff"></i></div>
+            <div>
+              <div class="cl-label">GitHub</div>
+              <div class="cl-value">github.com/alexmorgan</div>
+            </div>
+            <i class="fas fa-external-link-alt cl-arrow"></i>
+          </a>
+          <a href="#" class="contact-link-card">
+            <div class="cl-icon" style="background:linear-gradient(135deg,#1da1f2,#0d8ddb)"><i class="fab fa-twitter" style="color:#fff"></i></div>
+            <div>
+              <div class="cl-label">Twitter</div>
+              <div class="cl-value">@alexmorgandev</div>
+            </div>
+            <i class="fas fa-external-link-alt cl-arrow"></i>
+          </a>
+        </div>
+
+        <div class="form-card">
+          <h3><i class="fas fa-paper-plane" style="color:var(--accent);margin-right:8px"></i>Send a Message</h3>
+          <input type="text" class="app-input" placeholder="Your name">
+          <input type="email" class="app-input" placeholder="Your email">
+          <textarea class="app-input" placeholder="Your message…"></textarea>
+          <button class="send-btn" id="sendMsgBtn"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </div>
+      </div>
+
+      <!-- QR Modal (bottom sheet) -->
+      <div id="qrModal">
+        <div class="qr-sheet">
+          <div class="sheet-handle"></div>
+          <div class="qr-sheet-title">Share My Profile</div>
+          <div class="qr-sheet-sub">Scan with your phone camera</div>
+          <div id="qrCodeCanvas"></div>
+          <p class="qr-url" id="qrUrlLabel"></p>
+          <div class="qr-actions">
+            <button class="qr-action-btn qr-dl" id="downloadQrBtn"><i class="fas fa-download"></i> Download</button>
+            <button class="qr-action-btn qr-cancel" id="qrClose">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div id="toast">✅ Copied to clipboard!</div>
+
+    </div><!-- /app-viewport -->
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-screen="home" id="nav-home">
+        <i class="fas fa-home nav-icon"></i>
+        <span class="nav-label">Home</span>
+        <div class="nav-dot"></div>
+      </button>
+
+      <button class="nav-item" data-screen="portfolio" id="nav-portfolio">
+        <i class="fas fa-briefcase nav-icon"></i>
+        <span class="nav-label">Work</span>
+        <div class="nav-dot"></div>
+      </button>
+
+      <!-- Center FAB -->
+      <div class="nav-fab">
+        <button class="fab-btn" id="qrFab" title="QR Code">
+          <i class="fas fa-qrcode"></i>
+        </button>
+      </div>
+
+      <button class="nav-item" data-screen="about" id="nav-about">
+        <i class="fas fa-user nav-icon"></i>
+        <span class="nav-label">About</span>
+        <div class="nav-dot"></div>
+      </button>
+
+      <button class="nav-item" data-screen="contact" id="nav-contact">
+        <i class="fas fa-envelope nav-icon"></i>
+        <span class="nav-label">Contact</span>
+        <div class="nav-dot"></div>
+      </button>
+    </nav>
+
+  </div><!-- /phone-shell -->
+
+  <script>
+    // ── Live clock ──
+    function updateClock() {
+      const now  = new Date();
+      const h    = String(now.getHours()).padStart(2,'0');
+      const m    = String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('statusTime').textContent = h + ':' + m;
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+
+    // ── Screen navigation ──
+    const navItems = document.querySelectorAll('.nav-item[data-screen]');
+    const screens  = document.querySelectorAll('.screen');
+
+    function showScreen(id) {
+      screens.forEach(s => s.classList.remove('active'));
+      navItems.forEach(n => n.classList.remove('active'));
+      const target = document.getElementById('screen-' + id);
+      const navBtn = document.getElementById('nav-' + id);
+      if (target) target.classList.add('active');
+      if (navBtn) navBtn.classList.add('active');
+    }
+
+    navItems.forEach(btn => {
+      btn.addEventListener('click', () => showScreen(btn.dataset.screen));
+    });
+
+    // Filter buttons (Portfolio)
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // ── Follow button ──
+    const followBtn = document.getElementById('followBtn');
+    let isFollowing = false;
+    followBtn.addEventListener('click', () => {
+      isFollowing = !isFollowing;
+      if (isFollowing) {
+        followBtn.innerHTML = '<i class="fas fa-user-check"></i> &nbsp;Following';
+        followBtn.style.background = '#28a745';
+      } else {
+        followBtn.innerHTML = '<i class="fas fa-user-plus"></i> &nbsp;Follow';
+        followBtn.style.background = '';
+      }
+    });
+
+    // ── Toast helper ──
+    const toast = document.getElementById('toast');
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // ── Contact / copy email ──
+    const myEmail = 'hello@alexmorgan.dev';
+    document.getElementById('contactBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(myEmail)
+        .then(() => showToast('✅ Email copied to clipboard!'))
+        .catch(() => showToast('📋 ' + myEmail));
+    });
+
+    document.getElementById('emailCard').addEventListener('click', () => {
+      navigator.clipboard.writeText(myEmail)
+        .then(() => showToast('✅ Email copied!'))
+        .catch(() => showToast('📋 ' + myEmail));
+    });
+
+    // Send message button
+    document.getElementById('sendMsgBtn').addEventListener('click', () => {
+      showToast('🚀 Message sent! I\'ll reply soon.');
+    });
+
+    // ── QR Code ──
+    const qrModal  = document.getElementById('qrModal');
+    const qrCanvas = document.getElementById('qrCodeCanvas');
+    const qrLabel  = document.getElementById('qrUrlLabel');
+    const dlBtn    = document.getElementById('downloadQrBtn');
+    const qrClose  = document.getElementById('qrClose');
+
+    let qrGenerated = false;
+    const profileUrl = "http://192.168.1.13/card";
+
+    function openQR() {
+      qrModal.classList.add('active');
+      if (!qrGenerated) {
+        qrLabel.textContent = profileUrl;
+        new QRCode(qrCanvas, {
+          text: profileUrl,
+          width: 200,
+          height: 200,
+          colorDark: '#667eea',
+          colorLight: '#fafafa',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+        qrGenerated = true;
+      }
+    }
+
+    document.getElementById('qrFab').addEventListener('click', openQR);
+    document.getElementById('qrShortcut').addEventListener('click', openQR);
+
+    qrClose.addEventListener('click', () => qrModal.classList.remove('active'));
+    qrModal.addEventListener('click', e => {
+      if (e.target === qrModal) qrModal.classList.remove('active');
+    });
+
+    dlBtn.addEventListener('click', () => {
+      const canvas = qrCanvas.querySelector('canvas');
+      if (!canvas) return;
+      const link = document.createElement('a');
+      link.download = 'alex-morgan-qr.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('📥 QR code downloaded!');
+    });
+  </script>
+
+</body>
+</html>

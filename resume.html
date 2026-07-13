@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curriculum Vitae – Alex Morgan</title>
+  <meta name="description" content="Curriculum Vitae of Alex Morgan – Creative Developer & Designer">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --primary:   #1a1a2e;
+      --accent:    #667eea;
+      --accent2:   #764ba2;
+      --sidebar-w: 270px;
+      --text:      #2d2d2d;
+      --muted:     #6c757d;
+      --border:    #e4e4e4;
+      --bg:        #f0f2f8;
+      --white:     #ffffff;
+      --radius:    10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── Wrapper ── */
+    .cv-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+      display: flex;
+    }
+
+    /* ════════════════════════════
+       SIDEBAR
+    ════════════════════════════ */
+    .cv-sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--primary);
+      color: var(--white);
+      padding: 40px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Photo */
+    .sidebar-photo {
+      text-align: center;
+    }
+
+    .sidebar-photo img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid var(--accent);
+      object-fit: cover;
+    }
+
+    .sidebar-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--white);
+      margin-top: 12px;
+      line-height: 1.3;
+    }
+
+    .sidebar-role {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+
+    /* Sidebar section headers */
+    .sb-section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    /* Contact items */
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,.8);
+    }
+
+    .contact-list li i {
+      color: var(--accent);
+      width: 16px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .contact-list a {
+      color: rgba(255,255,255,.8);
+      text-decoration: none;
+    }
+
+    .contact-list a:hover { color: var(--accent); }
+
+    /* Skill bars */
+    .skill-bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .skill-bar-item span {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 4px;
+    }
+
+    .skill-track {
+      background: rgba(255,255,255,.12);
+      border-radius: 20px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .skill-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      animation: growBar 1s ease forwards;
+      transform-origin: left;
+    }
+
+    @keyframes growBar {
+      from { width: 0 !important; }
+    }
+
+    /* Languages */
+    .lang-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .lang-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,.85);
+    }
+
+    .lang-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.2);
+    }
+
+    .dot.filled {
+      background: var(--accent);
+    }
+
+    /* Interests */
+    .interest-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,.8);
+    }
+
+    /* ════════════════════════════
+       MAIN CONTENT
+    ════════════════════════════ */
+    .cv-main {
+      flex: 1;
+      padding: 44px 42px 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    /* Top header (name + CV label) */
+    .cv-top-header {
+      border-bottom: 3px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    .cv-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .cv-full-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .cv-tagline {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* Section heading */
+    .sec-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .sec-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .sec-line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 2px;
+    }
+
+    .sec-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    /* Profile / Summary */
+    .summary-text {
+      font-size: 0.92rem;
+      color: #444;
+      line-height: 1.75;
+      background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px 20px;
+    }
+
+    /* Timeline items (experience & education) */
+    .timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 6px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 18px;
+    }
+
+    .tl-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      flex-shrink: 0;
+      margin-top: 4px;
+      z-index: 1;
+      box-shadow: 0 0 0 3px rgba(102,126,234,.2);
+    }
+
+    .tl-content { flex: 1; }
+
+    .tl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .tl-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .tl-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .tl-org {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .tl-desc {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .tl-desc ul {
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .tl-desc li {
+      margin-bottom: 5px;
+    }
+
+    /* Skills competency grid */
+    .comp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .comp-card {
+      background: #f8f9ff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .comp-card h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .comp-card p {
+      font-size: 0.82rem;
+      color: #555;
+      line-height: 1.55;
+    }
+
+    /* Publications */
+    .pub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pub-item {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .pub-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+
+    .pub-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 3px;
+    }
+
+    .pub-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* Awards */
+    .awards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .award-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .award-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .award-text h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .award-text p {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* References */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .ref-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      transition: box-shadow .2s;
+    }
+
+    .ref-card:hover {
+      box-shadow: 0 4px 20px rgba(102,126,234,.15);
+    }
+
+    .ref-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 auto 8px;
+    }
+
+    .ref-name { font-size: 0.9rem; font-weight: 700; color: var(--primary); }
+    .ref-pos  { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+    .ref-contact { font-size: 0.77rem; color: var(--accent); }
+
+    /* Print / Download bar */
+    .cv-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .25s, transform .2s;
+    }
+
+    .btn-action:hover { opacity: .88; transform: translateY(-1px); }
+
+    .btn-print {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+    }
+
+    .btn-back {
+      background: var(--bg);
+      color: var(--primary);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Print Styles ── */
+    @media print {
+      body { background: none; padding: 0; }
+      .cv-wrapper { box-shadow: none; border-radius: 0; max-width: 100%; }
+      .cv-actions { display: none; }
+      .cv-sidebar { background: #1a1a2e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .skill-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .cv-wrapper { flex-direction: column; }
+      .cv-sidebar { width: 100%; min-width: 0; }
+      .comp-grid, .ref-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cv-wrapper">
+
+    <!-- ══════════════════════════════════
+         SIDEBAR
+    ══════════════════════════════════ -->
+    <aside class="cv-sidebar">
+
+      <!-- Photo & Identity -->
+      <div class="sidebar-photo">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Alex Morgan">
+        <p class="sidebar-name">Alex Morgan</p>
+        <p class="sidebar-role">Creative Developer &amp; Designer</p>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <p class="sb-section-title">Contact</p>
+        <ul class="contact-list">
+          <li><i class="fas fa-map-marker-alt"></i> San Francisco, CA</li>
+          <li><i class="fas fa-envelope"></i><a href="mailto:hello@alexmorgan.dev">hello@alexmorgan.dev</a></li>
+          <li><i class="fas fa-phone"></i> +1 (415) 555-0192</li>
+          <li><i class="fab fa-linkedin"></i><a href="#" target="_blank">linkedin.com/in/alexmorgan</a></li>
+          <li><i class="fab fa-github"></i><a href="#" target="_blank">github.com/alexmorgan</a></li>
+          <li><i class="fas fa-globe"></i><a href="#" target="_blank">alexmorgan.dev</a></li>
+        </ul>
+      </div>
+
+      <!-- Core Skills (bar chart) -->
+      <div>
+        <p class="sb-section-title">Core Skills</p>
+        <div class="skill-bar-list">
+          <div class="skill-bar-item">
+            <span><span>UI/UX Design</span><span>95%</span></span>
+            <div class="skill-track"><div class="skill-fill" style="width:95%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <span><span>JavaScript / TS</span><span>90%</span></span>
+            <div class="skill-track"><div class="skill-fill" style="width:90%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <span><span>React / Next.js</span><span>88%</span></span>
+            <div class="skill-track"><div class="skill-fill" style="width:88%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <span><span>PHP / Laravel</span><span>80%</span></span>
+            <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <span><span>Python / ML</span><span>72%</span></span>
+            <div class="skill-track"><div class="skill-fill" style="width:72%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <span><span>DevOps / Docker</span><span>65%</span></span>
+            <div class="skill-track"><div class="skill-fill" style="width:65%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div>
+        <p class="sb-section-title">Languages</p>
+        <div class="lang-list">
+          <div class="lang-item">
+            <span>English</span>
+            <div class="lang-dots">
+              <div class="dot filled"></div><div class="dot filled"></div>
+              <div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div>
+            </div>
+          </div>
+          <div class="lang-item">
+            <span>Spanish</span>
+            <div class="lang-dots">
+              <div class="dot filled"></div><div class="dot filled"></div>
+              <div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div>
+            </div>
+          </div>
+          <div class="lang-item">
+            <span>French</span>
+            <div class="lang-dots">
+              <div class="dot filled"></div><div class="dot filled"></div>
+              <div class="dot filled"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interests -->
+      <div>
+        <p class="sb-section-title">Interests</p>
+        <div class="interest-tags">
+          <span class="tag">Open Source</span>
+          <span class="tag">Photography</span>
+          <span class="tag">Music</span>
+          <span class="tag">Coffee</span>
+          <span class="tag">Hiking</span>
+          <span class="tag">AI & ML</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ══════════════════════════════════
+         MAIN CONTENT
+    ══════════════════════════════════ -->
+    <main class="cv-main">
+
+      <!-- Header -->
+      <div class="cv-top-header">
+        <p class="cv-label">Curriculum Vitae</p>
+        <h1 class="cv-full-name">Alex Morgan</h1>
+        <p class="cv-tagline">Creative Developer &amp; Designer · 8+ years crafting digital products</p>
+      </div>
+
+      <!-- Actions bar -->
+      <div class="cv-actions">
+        <a href="index.php" class="btn-action btn-back"><i class="fas fa-arrow-left"></i> Back to Card</a>
+        <button class="btn-action btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print / Save PDF</button>
+      </div>
+
+      <!-- Profile -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-user"></i></div>
+          <h2>Profile</h2>
+          <div class="sec-line"></div>
+        </div>
+        <p class="summary-text">
+          A results-driven Creative Developer &amp; Designer with over 8 years of experience building
+          scalable, accessible, and aesthetically exceptional web applications. Passionate about the
+          intersection of design and engineering — bringing pixel-perfect UIs to life with clean,
+          maintainable code. Proven track record leading cross-functional teams, mentoring junior
+          engineers, and shipping products used by millions worldwide.
+        </p>
+      </section>
+
+      <!-- Experience -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-briefcase"></i></div>
+          <h2>Professional Experience</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="timeline">
+
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-header">
+                <span class="tl-title">Senior Full-Stack Developer</span>
+                <span class="tl-badge">2022 – Present</span>
+              </div>
+              <p class="tl-org">Nexus Digital Labs · San Francisco, CA</p>
+              <div class="tl-desc">
+                <ul>
+                  <li>Led a team of 6 engineers to redesign the core SaaS platform, reducing load time by <strong>47%</strong>.</li>
+                  <li>Architected a micro-frontend system using React &amp; Module Federation, enabling independent team deployments.</li>
+                  <li>Collaborated with Product &amp; Design to ship 14 major features, contributing to a <strong>32% increase</strong> in MRR.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-header">
+                <span class="tl-title">UI/UX Developer</span>
+                <span class="tl-badge">2019 – 2022</span>
+              </div>
+              <p class="tl-org">Pixel Bridge Agency · New York, NY</p>
+              <div class="tl-desc">
+                <ul>
+                  <li>Delivered 30+ client projects across e-commerce, fintech, and healthcare verticals.</li>
+                  <li>Designed and implemented a custom design system adopted company-wide, cutting UI development time by <strong>40%</strong>.</li>
+                  <li>Mentored 4 junior developers through weekly code reviews and pair-programming sessions.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-header">
+                <span class="tl-title">Front-End Developer</span>
+                <span class="tl-badge">2017 – 2019</span>
+              </div>
+              <p class="tl-org">StartUp Foundry · Austin, TX</p>
+              <div class="tl-desc">
+                <ul>
+                  <li>Built and maintained React SPA for a VC-backed startup, growing the user base from 0 to <strong>120K MAU</strong>.</li>
+                  <li>Improved Lighthouse performance score from 54 to 94 through code splitting and image optimisation.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-graduation-cap"></i></div>
+          <h2>Education</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="timeline">
+
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-header">
+                <span class="tl-title">M.Sc. Human-Computer Interaction</span>
+                <span class="tl-badge">2015 – 2017</span>
+              </div>
+              <p class="tl-org">Stanford University · Palo Alto, CA</p>
+              <div class="tl-desc">
+                <p>GPA 3.9/4.0 · Thesis: <em>"Adaptive Interface Systems for Neurodiverse Users"</em></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-header">
+                <span class="tl-title">B.Sc. Computer Science</span>
+                <span class="tl-badge">2011 – 2015</span>
+              </div>
+              <p class="tl-org">University of California, Berkeley · Berkeley, CA</p>
+              <div class="tl-desc">
+                <p>Graduated <em>Cum Laude</em> · Dean's List · President of ACM Student Chapter</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Competencies -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-cogs"></i></div>
+          <h2>Skills &amp; Competencies</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="comp-grid">
+          <div class="comp-card">
+            <h4>Frontend</h4>
+            <p>React, Next.js, TypeScript, Vue, HTML5, CSS3, Tailwind, Framer Motion, Three.js</p>
+          </div>
+          <div class="comp-card">
+            <h4>Backend</h4>
+            <p>Node.js, PHP, Laravel, Python, REST, GraphQL, PostgreSQL, MySQL, Redis</p>
+          </div>
+          <div class="comp-card">
+            <h4>DevOps &amp; Tools</h4>
+            <p>Docker, CI/CD, Git, AWS, Vercel, Linux, Jest, Cypress, Webpack, Vite</p>
+          </div>
+          <div class="comp-card">
+            <h4>Design &amp; Soft Skills</h4>
+            <p>Figma, Adobe XD, Agile/Scrum, Technical Leadership, Mentoring, Client Communication</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Publications -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-book-open"></i></div>
+          <h2>Publications &amp; Talks</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="pub-list">
+          <div class="pub-item">
+            <p class="pub-title">"Design Tokens at Scale: A Practical Guide" — CSS-Tricks</p>
+            <p class="pub-meta">Published · March 2024 · <a href="#" style="color:var(--accent)">Read article →</a></p>
+          </div>
+          <div class="pub-item">
+            <p class="pub-title">Speaker — "The Future of Web Animation" · JSConf San Francisco</p>
+            <p class="pub-meta">Conference Talk · October 2023</p>
+          </div>
+          <div class="pub-item">
+            <p class="pub-title">"Micro-Frontend Patterns in Production" — Smashing Magazine</p>
+            <p class="pub-meta">Published · January 2023 · <a href="#" style="color:var(--accent)">Read article →</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Awards -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-trophy"></i></div>
+          <h2>Awards &amp; Certifications</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="awards-list">
+          <div class="award-item">
+            <div class="award-icon"><i class="fas fa-medal"></i></div>
+            <div class="award-text">
+              <h4>AWS Certified Solutions Architect – Associate</h4>
+              <p>Amazon Web Services · 2023</p>
+            </div>
+          </div>
+          <div class="award-item">
+            <div class="award-icon"><i class="fas fa-star"></i></div>
+            <div class="award-text">
+              <h4>Innovation Award – Best Internal Tool</h4>
+              <p>Nexus Digital Labs · 2023</p>
+            </div>
+          </div>
+          <div class="award-item">
+            <div class="award-icon"><i class="fas fa-certificate"></i></div>
+            <div class="award-text">
+              <h4>Google UX Design Professional Certificate</h4>
+              <p>Coursera · 2021</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- References -->
+      <section>
+        <div class="sec-heading">
+          <div class="sec-icon"><i class="fas fa-users"></i></div>
+          <h2>References</h2>
+          <div class="sec-line"></div>
+        </div>
+
+        <div class="ref-grid">
+          <div class="ref-card">
+            <div class="ref-avatar">JD</div>
+            <p class="ref-name">Jane Doe</p>
+            <p class="ref-pos">CTO, Nexus Digital Labs</p>
+            <p class="ref-contact">jane.doe@nexusdigital.com</p>
+          </div>
+          <div class="ref-card">
+            <div class="ref-avatar">MS</div>
+            <p class="ref-name">Michael Smith</p>
+            <p class="ref-pos">Creative Director, Pixel Bridge</p>
+            <p class="ref-contact">m.smith@pixelbridge.com</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>
