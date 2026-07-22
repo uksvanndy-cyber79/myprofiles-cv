@@ -1290,6 +1290,15 @@
   </div><!-- /phone-shell -->
 
   <script>
+    // Ensure the SDK is ready
+    const tg = window.Telegram.WebApp;
+    
+    // Expand the app to take up the whole screen
+    tg.expand();
+    
+    // Access the Telegram user's data (username, ID, etc.)
+    console.log("Logged in user:", tg.initDataUnsafe.user);
+    
     // ── Live clock ──
     function updateClock() {
       const now  = new Date();
